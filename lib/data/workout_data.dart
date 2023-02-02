@@ -1,25 +1,41 @@
 //creating Workout List
-
 import 'package:flutter/cupertino.dart';
 import 'package:workouttracker/models/workout_model.dart';
 
 import '../models/exercise_model.dart';
 
-class WorkOutData {
+//using changed notifier
+
+class WorkOutData extends ChangeNotifier {
   //overall i need is alist of workout containing list of exercise
   //excerise must have a name and exceise
 
   //creating a list of workoutModel for default
   List<WorkOut> workOutList = [
-    WorkOut(name: 'Chest', exercise: [
-      Exercise(
-        nameEx: 'Bench Press',
-        weight: '23',
-        sets: '4',
-        reps: '8',
-        isCompleted: true,
-      )
-    ]),
+    WorkOut(
+      name: 'Chest',
+      exercise: [
+        Exercise(
+          nameEx: 'Bench Press',
+          weight: '23',
+          sets: '4 ',
+          reps: '8 ',
+          isCompleted: false,
+        )
+      ],
+    ),
+    WorkOut(
+      name: 'Back',
+      exercise: [
+        Exercise(
+          nameEx: 'DeadLift',
+          weight: '110',
+          sets: '3 ',
+          reps: '8 ',
+          isCompleted: false,
+        )
+      ],
+    ),
   ];
 
   //method to get the list of Workout
@@ -30,7 +46,10 @@ class WorkOutData {
   //let the user add the workout
   void addWorkouts(String name) {
     //add a workout witht the list of blank exercise
-    workOutList.add(WorkOut(name: name, exercise: []));
+    workOutList.add(
+      WorkOut(name: name, exercise: []),
+    );
+    notifyListeners();
   }
 
   //let the user add the exercise
@@ -47,13 +66,7 @@ class WorkOutData {
         reps: reps,
       ),
     );
-  }
-
-  //check off exercise
-  void checkOffExc(String workOutName, String exerciseName) {
-    Exercise relevantExercise = getrelevantExercise(workOutName, exerciseName);
-    // boolean to show user has completed or not
-    relevantExercise.isCompleted = !relevantExercise.isCompleted;
+    notifyListeners();
   }
 
   //helper methods
@@ -72,5 +85,19 @@ class WorkOutData {
     Exercise relevantExercise = relevantWorkOut.exercise
         .firstWhere((exercise) => exercise.nameEx == exerciseName);
     return relevantExercise;
+  }
+
+  //check off exercise
+  void checkOffExc(String workOutName, String exerciseName) {
+    Exercise relevantExercise = getrelevantExercise(workOutName, exerciseName);
+    // boolean to show user has completed or not
+    relevantExercise.isCompleted = !relevantExercise.isCompleted;
+    notifyListeners();
+  }
+
+  //lets get the lenght of givin workouts
+  int numberOfWorkouts(String workoutName) {
+    WorkOut relevantWorkOuts = getrelevantWorkout(workoutName);
+    return relevantWorkOuts.exercise.length;
   }
 }
